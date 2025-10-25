@@ -129,7 +129,7 @@
     }
 
     // Redirection immédiate vers la page résultats
-    window.location.href = "result.html";
+    window.location.href = "docs/result.html";
   }
 
   // Navigation
