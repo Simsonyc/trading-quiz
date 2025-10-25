@@ -1,5 +1,4 @@
 (function(){
-  // ---- Récupération des éléments du quiz ----
   const form  = document.getElementById('nb-quiz-form');
   const slides = Array.from(document.querySelectorAll('.nb-slide'));
   const nextBtn = document.getElementById('nbNext');
@@ -9,7 +8,7 @@
   const POINTS = 10; 
   let step = 0;
 
-  // ---- Mélange les options à l'affichage ----
+  // Mélange des cartes
   function shuffleNodes(container){
     const nodes = Array.from(container.children);
     for(let i = nodes.length - 1; i > 0; i--){
@@ -19,7 +18,7 @@
   }
   document.querySelectorAll('.nb-options').forEach(group => shuffleNodes(group));
 
-  // ---- Sélection d'option par slide ----
+  // Sélection d'options
   document.querySelectorAll('.nb-options').forEach(group=>{
     group.addEventListener('click', (e)=>{
       const card = e.target.closest('.nb-card');
@@ -29,7 +28,7 @@
     });
   });
 
-  // ---- Affiche la slide en cours + barre de progression ----
+  // Affiche step
   function showStep(i){
     slides.forEach(s => s.classList.remove('active'));
     slides[i].classList.add('active');
@@ -40,7 +39,7 @@
     step = i;
   }
 
-  // ---- Validation légère à chaque étape ----
+  // Validation des réponses
   function validateCurrent(){
     if(step === 0){
       const val = document.getElementById('business_description_input').value.trim();
@@ -62,24 +61,17 @@
     return true;
   }
 
-  // ---- Navigation ----
-  nextBtn.addEventListener('click', ()=>{
-    if(!validateCurrent()) return;
-    if(step < slides.length - 1){
-      showStep(step + 1);
-    } else {
-      computeAndSubmit();
-    }
-  });
-  prevBtn.addEventListener('click', ()=> showStep(Math.max(0, step - 1)));
+  // Calculs + soumission
+  function computeAndSubmit(event){
+    if(event) event.preventDefault(); // Bloque le rechargement auto
 
-  // ---- Calculs + remplissage champs hidden + submit + redirection ----
-  function computeAndSubmit(){
-    // 1) description libre
+    console.log("== DEBUG avant remplissage ==");
+
+    // Description
     const bd = document.getElementById('business_description_input').value.trim();
     document.getElementById('business_description').value = bd;
 
-    // 2) scores
+    // Scores
     const scores = { curieux:0, debutant:0, intermediaire:0, confirme:0 };
     for(let i=1; i<=6; i++){
       const group = document.querySelector(`.nb-slide[data-step="${i}"] .nb-options`);
@@ -92,6 +84,7 @@
 
     const maxPoints = POINTS * 6;
     const toPercent = (val)=> Math.round((val / maxPoints) * 100);
+
     const perc = {
       curieux:       toPercent(scores.curieux),
       debutant:      toPercent(scores.debutant),
@@ -99,13 +92,12 @@
       confirme:      toPercent(scores.confirme)
     };
 
-    // 3) dominant
+    // Profil dominant
     const order = ['confirme','intermediaire','debutant','curieux'];
     let dominant = 'curieux', best = -1;
     for(const key of order){ if(scores[key] > best){ best = scores[key]; dominant = key; } }
-    const labelMap = { curieux:'Thomas', debutant:'Claire', intermediaire:'Mehdi', confirme:'Nina' };
 
-    // 4) push dans les inputs hidden (attention aux IDs et NAMES déjà en place dans ta page)
+    // Injection des valeurs
     document.getElementById('score_curieux').value = scores.curieux;
     document.getElementById('score_debutant').value = scores.debutant;
     document.getElementById('score_intermediaire').value = scores.intermediaire;
@@ -114,36 +106,42 @@
     document.getElementById('percent_debutant').value = perc.debutant;
     document.getElementById('percent_intermediaire').value = perc.intermediaire;
     document.getElementById('percent_confirme').value = perc.confirme;
+
+    const labelMap = { curieux:'Thomas', debutant:'Claire', intermediaire:'Mehdi', confirme:'Nina' };
     document.getElementById('profil_dominant').value = labelMap[dominant];
 
-    // 5) prénom + email de la slide Q7
+    // Prénom et email
     document.getElementById('first_name').value = document.getElementById('first_name_input').value.trim();
     document.getElementById('email').value = document.getElementById('email_input').value.trim();
 
-    // Logs debug (tu verras ça dans F12 > Console sur la page du quiz)
-    console.log("DEBUG hidden:", {
-      business_description: document.getElementById('business_description').value,
-      score_curieux: document.getElementById('score_curieux').value,
-      score_debutant: document.getElementById('score_debutant').value,
-      score_intermediaire: document.getElementById('score_intermediaire').value,
-      score_confirme: document.getElementById('score_confirme').value,
-      percent_curieux: document.getElementById('percent_curieux').value,
-      percent_debutant: document.getElementById('percent_debutant').value,
-      percent_intermediaire: document.getElementById('percent_intermediaire').value,
-      percent_confirme: document.getElementById('percent_confirme').value,
-      profil_dominant: document.getElementById('profil_dominant').value,
+    console.log("== DEBUG avant submit ==", {
+      bd, scores, perc, dominant,
       first_name: document.getElementById('first_name').value,
       email: document.getElementById('email').value
     });
 
-    // 6) submit vers ton Form GHL (action déjà dans ton <form>)
-    form.submit();
+    // Envoi vers GHL (optionnel)
+    try {
+      form.submit();
+      console.log("✅ Formulaire soumis à GHL");
+    } catch(e){
+      console.warn("⚠️ Erreur lors de la soumission GHL", e);
+    }
 
-    // 7) redirection vers la page Résultats
-    setTimeout(()=>{
-      window.location.href = "https://app.gohighlevel.com/v2/preview/ey5xGslIvGm87XF8dyXM";
-    }, 900);
+    // Redirection immédiate vers la page résultats
+    window.location.href = "result.html";
   }
+
+  // Navigation
+  nextBtn.addEventListener('click', (e)=>{
+    if(!validateCurrent()) return;
+    if(step < slides.length - 1){
+      showStep(step + 1);
+    } else {
+      computeAndSubmit(e); // Validation finale
+    }
+  });
+  prevBtn.addEventListener('click', ()=> showStep(Math.max(0, step - 1)));
 
   // Init
   showStep(0);
