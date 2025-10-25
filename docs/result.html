@@ -1,0 +1,96 @@
+<!-- === PAGE RESULTATS NEUROBREAK === -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Résultats Quiz NeuroBreak</title>
+  <style>
+    body {
+      background:#0f1220;
+      font-family: Inter, system-ui, Arial, sans-serif;
+      margin:0; padding:20px;
+      color:#fff;
+    }
+    .nb-result { 
+      background:#0f1220; 
+      border-radius:20px; 
+      padding:24px; 
+      max-width:820px; 
+      margin:20px auto; 
+      box-shadow:0 10px 30px rgba(0,0,0,.35) 
+    }
+    .nb-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px }
+    .nb-title { font-size:24px; font-weight:800; color:#ec8128 }
+
+    .nb-section { margin:20px 0 }
+    .nb-label { font-size:18px; font-weight:700; margin-bottom:8px; color:#0cc0df }
+
+    .nb-bar-wrap { background:#1f2439; border-radius:999px; overflow:hidden; margin:6px 0; height:16px }
+    .nb-bar { height:100%; width:0; background: linear-gradient(90deg,#ec8128,#0cc0df); transition:width 1s ease }
+
+    .nb-feedback { background:#161a2c; padding:16px; border-radius:12px; line-height:1.6; font-size:15px }
+  </style>
+</head>
+<body>
+  <div class="nb-result">
+    <div class="nb-header">
+      <div class="nb-title">✨ Tes Résultats NeuroBreak™</div>
+    </div>
+
+    <!-- PROFIL DOMINANT -->
+    <div class="nb-section">
+      <div class="nb-label">Profil dominant</div>
+      <div id="profil" style="font-size:22px; font-weight:800; color:#ec8128"></div>
+    </div>
+
+    <!-- POURCENTAGES -->
+    <div class="nb-section">
+      <div class="nb-label">Répartition de ton profil</div>
+
+      <div>👀 Curieux (<span id="curieuxVal">0</span>%)</div>
+      <div class="nb-bar-wrap"><div class="nb-bar" id="barCurieux"></div></div>
+
+      <div>👶 Débutant (<span id="debutantVal">0</span>%)</div>
+      <div class="nb-bar-wrap"><div class="nb-bar" id="barDebutant"></div></div>
+
+      <div>📈 Intermédiaire (<span id="intermediaireVal">0</span>%)</div>
+      <div class="nb-bar-wrap"><div class="nb-bar" id="barIntermediaire"></div></div>
+
+      <div>🔥 Confirmé (<span id="confirmeVal">0</span>%)</div>
+      <div class="nb-bar-wrap"><div class="nb-bar" id="barConfirme"></div></div>
+    </div>
+
+    <!-- FEEDBACK IA -->
+    <div class="nb-section">
+      <div class="nb-label">🔥 Feedback personnalisé</div>
+      <div class="nb-feedback" id="feedback">Ton feedback apparaîtra ici...</div>
+    </div>
+  </div>
+
+  <script>
+    // Simulation pour test (dans GHL ce sera remplacé par les vrais champs)
+    const data = {
+      profil_dominant: "Confirmé",
+      percent_curieux: 20,
+      percent_debutant: 30,
+      percent_intermediaire: 25,
+      percent_confirme: 25,
+      ai_feedback: "Tu es prêt à passer à la vitesse supérieure 🚀"
+    };
+
+    // Injection des données
+    document.getElementById("profil").innerText = data.profil_dominant;
+    document.getElementById("curieuxVal").innerText = data.percent_curieux;
+    document.getElementById("debutantVal").innerText = data.percent_debutant;
+    document.getElementById("intermediaireVal").innerText = data.percent_intermediaire;
+    document.getElementById("confirmeVal").innerText = data.percent_confirme;
+    document.getElementById("feedback").innerText = data.ai_feedback;
+
+    // Remplissage des barres
+    document.getElementById("barCurieux").style.width = data.percent_curieux + "%";
+    document.getElementById("barDebutant").style.width = data.percent_debutant + "%";
+    document.getElementById("barIntermediaire").style.width = data.percent_intermediaire + "%";
+    document.getElementById("barConfirme").style.width = data.percent_confirme + "%";
+  </script>
+</body>
+</html>
