@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeuroBreak Quiz Trading</title>
+</head>
+<body>
+  <!-- Ton quiz -->
+  <h1>Quiz Trading NeuroBreak™</h1>
+  
+  <!-- === QUIZ STEPPER NEUROBREAK — 1 BLOC (shuffle inclus + Q7) === -->
+<style>
+  .nb-quiz { font-family: Inter, system-ui, Arial, sans-serif; color:#fff; background:#0f1220; border-radius:20px; padding:24px; max-width:820px; margin:20px auto; box-shadow:0 10px 30px rgba(0,0,0,.35) }
+  .nb-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px }
+  .nb-title { font-size:22px; font-weight:800; color:#ec8128 }
+  .nb-progress { height:8px; background:#1f2439; border-radius:999px; overflow:hidden; margin:10px 0 0 }
+  .nb-progress > div { height:100%; width:0; background: linear-gradient(90deg,#0cc0df,#58e5f3); transition:width .35s ease }
+
+  .nb-slide { display:none; animation: fadeIn .25s ease }
+  .nb-slide.active { display:block }
+  @keyframes fadeIn { from {opacity:0; transform: translateY(6px)} to {opacity:1; transform:none} }
+
+  .nb-q { font-size:22px; font-weight:700; margin-bottom:16px }
+  .nb-desc { opacity:.8; margin:-6px 0 16px; font-size:14px }
+
+  .nb-options { display:grid; grid-template-columns: 1fr 1fr; gap:12px }
+  @media (max-width:640px){ .nb-options{ grid-template-columns:1fr } }
+
+  .nb-card { background:#161a2c; border:2px solid transparent; border-radius:14px; padding:14px 16px; cursor:pointer; transition:all .25s ease }
+  .nb-card:hover { border-color:#0cc0df; transform:translateY(-1px) }
+  .nb-card.selected { border-color:#ec8128; background:#1b2036 }
+  .nb-card .tag { display:none }
+
+  .nb-textarea, .nb-input { width:100%; border-radius:12px; border:2px solid #1f2439; background:#0b0e1a; color:#fff; padding:12px; font-size:15px; outline:none; margin-bottom:12px }
+  .nb-textarea:focus, .nb-input:focus { border-color:#0cc0df }
+  .nb-input { min-height:48px }
+
+  .nb-nav { display:flex; gap:10px; justify-content:space-between; margin-top:18px }
+  .nb-btn { flex:1; padding:14px 16px; border:none; border-radius:12px; font-weight:800; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease }
+  .nb-btn:disabled { opacity:.4; cursor:not-allowed }
+  .nb-prev { background:#1b2036; color:#cfd6ff }
+  .nb-next { background: linear-gradient(90deg,#ec8128,#0cc0df); color:#0f1220; box-shadow:0 6px 18px rgba(12,192,223,.25) }
+  .nb-btn:active { transform: translateY(1px) }
+  .nb-footnote { opacity:.6; font-size:12px; margin-top:8px; text-align:center }
+</style>
+
+<form id="nb-quiz-form"
+      action="https://api.leadconnectorhq.com/widget/form/Tyh1sKUUaMUiAfAVDgbS"
+      method="POST"
+      target="ghl_submit_iframe">
+  <div class="nb-quiz" id="nbQuiz">
+    <div class="nb-header">
+      <div class="nb-title">NeuroBreak™ — Quiz Trading</div>
+      <div style="flex:1; margin-left:16px">
+        <div class="nb-progress"><div id="nbProgressBar"></div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE Q0 -->
+    <div class="nb-slide active" data-step="0">
+      <div class="nb-q">Q0 · En quelques mots, ton rapport au trading ?</div>
+      <div class="nb-desc">Pas de masque. Pas de blabla. Juste brut.</div>
+      <textarea class="nb-textarea" id="business_description_input" placeholder="Ex : J’observe depuis des mois… / J’ai déjà testé sans méthode…"></textarea>
+      <div class="nb-footnote">Tu peux écrire 1–2 phrases rapides.</div>
+    </div>
+
+    <!-- SLIDE Q1 -->
+    <div class="nb-slide" data-step="1">
+      <div class="nb-q">Q1 · Ton expérience en trading ?</div>
+      <div class="nb-options" data-question="q1">
+        <div class="nb-card" data-profile="curieux">👀 Je suis juste curieux <div class="tag">Profil : Curieux</div></div>
+        <div class="nb-card" data-profile="debutant">👶 Je débute totalement <div class="tag">Profil : Débutant</div></div>
+        <div class="nb-card" data-profile="intermediaire">📈 J’ai déjà essayé sans méthode <div class="tag">Profil : Intermédiaire</div></div>
+        <div class="nb-card" data-profile="confirme">💻 J’ai de l’expérience mais peu de résultats <div class="tag">Profil : Confirmé</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE Q2 -->
+    <div class="nb-slide" data-step="2">
+      <div class="nb-q">Q2 · Combien tu es prêt à mettre sur la table, sans te mentir ?</div>
+      <div class="nb-options" data-question="q2">
+        <div class="nb-card" data-profile="curieux">💸 Moins de 20 € <div class="tag">Profil : Curieux</div></div>
+        <div class="nb-card" data-profile="debutant">⚡ Entre 20 et 200 € <div class="tag">Profil : Débutant</div></div>
+        <div class="nb-card" data-profile="intermediaire">💼 Entre 200 et 3 000 € <div class="tag">Profil : Intermédiaire</div></div>
+        <div class="nb-card" data-profile="confirme">🚀 Plus de 3 000 € <div class="tag">Profil : Confirmé</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE Q3 -->
+    <div class="nb-slide" data-step="3">
+      <div class="nb-q">Q3 · Tu veux danser à quel rythme ?</div>
+      <div class="nb-options" data-question="q3">
+        <div class="nb-card" data-profile="curieux">👀 Une fois pour tester <div class="tag">Profil : Curieux</div></div>
+        <div class="nb-card" data-profile="debutant">🕰️ Long terme (HODL) <div class="tag">Profil : Débutant</div></div>
+        <div class="nb-card" data-profile="intermediaire">📅 Moyen terme (swing) <div class="tag">Profil : Intermédiaire</div></div>
+        <div class="nb-card" data-profile="confirme">⚡ Court terme (scalping / day) <div class="tag">Profil : Confirmé</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE Q4 -->
+    <div class="nb-slide" data-step="4">
+      <div class="nb-q">Q4 · Qu’est-ce qui t’attire le plus ?</div>
+      <div class="nb-options" data-question="q4">
+        <div class="nb-card" data-profile="curieux">💸 D’abord voir si ça marche <div class="tag">Profil : Curieux</div></div>
+        <div class="nb-card" data-profile="debutant">⚖️ Faire croître mon capital pas à pas <div class="tag">Profil : Débutant</div></div>
+        <div class="nb-card" data-profile="intermediaire">🛡️ Sécuriser mes placements <div class="tag">Profil : Intermédiaire</div></div>
+        <div class="nb-card" data-profile="confirme">📊 Maximiser mes gains vite <div class="tag">Profil : Confirmé</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE Q5 -->
+    <div class="nb-slide" data-step="5">
+      <div class="nb-q">Q5 · Comment tu veux piloter ton trading ?</div>
+      <div class="nb-options" data-question="q5">
+        <div class="nb-card" data-profile="curieux">👀 Qu’on me montre <div class="tag">Profil : Curieux</div></div>
+        <div class="nb-card" data-profile="debutant">🖐️ En manuel, tout contrôler <div class="tag">Profil : Débutant</div></div>
+        <div class="nb-card" data-profile="intermediaire">🤖 Automatisé (robots, tech) <div class="tag">Profil : Intermédiaire</div></div>
+        <div class="nb-card" data-profile="confirme">🔄 Copier les pros <div class="tag">Profil : Confirmé</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE Q6 -->
+    <div class="nb-slide" data-step="6">
+      <div class="nb-q">Q6 · Et quand ça secoue, ta tolérance au risque est ?</div>
+      <div class="nb-options" data-question="q6">
+        <div class="nb-card" data-profile="curieux">👀 Je ne sais pas <div class="tag">Profil : Curieux</div></div>
+        <div class="nb-card" data-profile="debutant">🔍 Faible <div class="tag">Profil : Débutant</div></div>
+        <div class="nb-card" data-profile="intermediaire">⚡ Moyenne <div class="tag">Profil : Intermédiaire</div></div>
+        <div class="nb-card" data-profile="confirme">🔥 Élevée <div class="tag">Profil : Confirmé</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE Q7 -->
+    <div class="nb-slide" data-step="7">
+      <div class="nb-q">Q7 · Pour recevoir ton profil complet et ta feuille de route</div>
+      <div class="nb-desc">👉 Entre ton prénom et ton email. Pas de spam, juste ton résultat NeuroBreak™ personnalisé.</div>
+      <input type="text" class="nb-input" id="first_name_input" placeholder="Ton prénom">
+      <input type="email" class="nb-input" id="email_input" placeholder="Ton email" required>
+      <div class="nb-footnote">Ton accès est envoyé directement à cette adresse.</div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="nb-nav">
+      <button type="button" class="nb-btn nb-prev" id="nbPrev" disabled>◀ Précédent</button>
+      <button type="button" class="nb-btn nb-next" id="nbNext">Suivant ▶</button>
+    </div>
+
+    <!-- HIDDEN -->
+    <input type="hidden" id="business_description" name="contact.business_description">
+    <input type="hidden" id="score_curieux" name="contact.score_curieux">
+    <input type="hidden" id="score_debutant" name="contact.score_debutant">
+    <input type="hidden" id="score_intermediaire" name="contact.score_intermediaire">
+    <input type="hidden" id="score_confirme" name="contact.score_confirme">
+    <input type="hidden" id="percent_curieux" name="contact.percent_curieux">
+    <input type="hidden" id="percent_debutant" name="contact.percent_debutant">
+    <input type="hidden" id="percent_intermediaire" name="contact.percent_intermediaire">
+    <input type="hidden" id="percent_confirme" name="contact.percent_confirme">
+    <input type="hidden" id="profil_dominant" name="contact.profil_dominant">
+    <input type="hidden" id="first_name" name="contact.first_name">
+    <input type="hidden" id="email" name="contact.email">
+  </div>
+</form>
+
+<!-- Ajout : iframe invisible -->
+<iframe name="ghl_submit_iframe" style="display:none;width:0;height:0;border:0;"></iframe>
+
+<script>
+(function(){
+  const form  = document.getElementById('nb-quiz-form');
+  const slides = Array.from(document.querySelectorAll('.nb-slide'));
+  const nextBtn = document.getElementById('nbNext');
+  const prevBtn = document.getElementById('nbPrev');
+  const progress = document.getElementById('nbProgressBar');
+
+  const POINTS = 10; 
+  let step = 0;
+
+  // Mélange les cartes
+  function shuffleNodes(container){
+    const nodes = Array.from(container.children);
+    for(let i = nodes.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      container.appendChild(nodes[j]);
+    }
+  }
+  document.querySelectorAll('.nb-options').forEach(group => shuffleNodes(group));
+
+  // Sélection d'options
+  document.querySelectorAll('.nb-options').forEach(group=>{
+    group.addEventListener('click', (e)=>{
+      const card = e.target.closest('.nb-card');
+      if(!card) return;
+      group.querySelectorAll('.nb-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+
+  // Affiche step
+  function showStep(i){
+    slides.forEach(s => s.classList.remove('active'));
+    slides[i].classList.add('active');
+    prevBtn.disabled = (i === 0);
+    nextBtn.textContent = (i === slides.length - 1) ? 'Valider' : 'Suivant ▶';
+    const pct = Math.round((i / (slides.length-1)) * 100);
+    progress.style.width = pct + '%';
+    step = i;
+  }
+
+  // Validation des réponses
+  function validateCurrent(){
+    if(step === 0){
+      const val = document.getElementById('business_description_input').value.trim();
+      if(val.length < 5){ alert("Écris au moins quelques mots pour commencer."); return false; }
+      return true;
+    }
+    if(step >= 1 && step <= 6){
+      const currentGroup = slides[step].querySelector('.nb-options');
+      if(!currentGroup) return true;
+      const selected = currentGroup.querySelector('.nb-card.selected');
+      if(!selected){ alert("Sélectionne une option pour continuer."); return false; }
+      return true;
+    }
+    if(step === 7){
+      const email = document.getElementById('email_input').value.trim();
+      if(email.length < 5 || !email.includes('@')){ alert("Merci d’entrer un email valide."); return false; }
+      return true;
+    }
+    return true;
+  }
+
+  // Navigation
+  nextBtn.addEventListener('click', ()=>{
+    if(!validateCurrent()) return;
+    if(step < slides.length - 1){
+      showStep(step + 1);
+    } else {
+      computeAndSubmit();
+    }
+  });
+  prevBtn.addEventListener('click', ()=> showStep(Math.max(0, step - 1)));
+
+  // Calculs + envoi
+  function computeAndSubmit(){
+    console.log("DEBUG champs:", {
+      bd: document.getElementById('business_description'),
+      curieux: document.getElementById('score_curieux'),
+      debutant: document.getElementById('score_debutant'),
+      intermediaire: document.getElementById('score_intermediaire'),
+      confirme: document.getElementById('score_confirme'),
+      profil: document.getElementById('profil_dominant'),
+      prenom: document.getElementById('first_name'),
+      email: document.getElementById('email')
+    });
+
+    const bd = document.getElementById('business_description_input').value.trim();
+    document.getElementById('business_description').value = bd;
+
+    const scores = { curieux:0, debutant:0, intermediaire:0, confirme:0 };
+    for(let i=1; i<=6; i++){
+      const group = document.querySelector(`.nb-slide[data-step="${i}"] .nb-options`);
+      const selected = group ? group.querySelector('.nb-card.selected') : null;
+      if(selected){
+        const prof = selected.getAttribute('data-profile');
+        if(scores.hasOwnProperty(prof)) scores[prof] += POINTS;
+      }
+    }
+
+    const maxPoints = POINTS * 6;
+    const toPercent = (val)=> Math.round((val / maxPoints) * 100);
+
+    const perc = {
+      curieux:       toPercent(scores.curieux),
+      debutant:      toPercent(scores.debutant),
+      intermediaire: toPercent(scores.intermediaire),
+      confirme:      toPercent(scores.confirme)
+    };
+
+    const order = ['confirme','intermediaire','debutant','curieux'];
+    let dominant = 'curieux', best = -1;
+    for(const key of order){ if(scores[key] > best){ best = scores[key]; dominant = key; } }
+
+    document.getElementById('score_curieux').value = scores.curieux;
+    document.getElementById('score_debutant').value = scores.debutant;
+    document.getElementById('score_intermediaire').value = scores.intermediaire;
+    document.getElementById('score_confirme').value = scores.confirme;
+    document.getElementById('percent_curieux').value = perc.curieux;
+    document.getElementById('percent_debutant').value = perc.debutant;
+    document.getElementById('percent_intermediaire').value = perc.intermediaire;
+    document.getElementById('percent_confirme').value = perc.confirme;
+
+    const labelMap = { curieux:'Thomas', debutant:'Claire', intermediaire:'Mehdi', confirme:'Nina' };
+    document.getElementById('profil_dominant').value = labelMap[dominant];
+
+    // Ajout prénom et email
+    document.getElementById('first_name').value = document.getElementById('first_name_input').value.trim();
+    document.getElementById('email').value = document.getElementById('email_input').value.trim();
+
+    // Envoi natif dans l'iframe cachée
+    form.submit();
+
+    // Redirection vers la page Résultats
+    setTimeout(()=>{
+      window.location.href = "https://app.gohighlevel.com/v2/preview/ey5xGslIvGm87XF8dyXM";
+    }, 900);
+  }
+
+  showStep(0);
+})();
+</script>
+
+
+</body>
+</html>
