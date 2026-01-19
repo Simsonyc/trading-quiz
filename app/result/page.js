@@ -11,23 +11,49 @@ export default function ResultPage() {
   useEffect(() => {
     async function fetchResults() {
       try {
-        const res = await fetch("/api/saveResults/last", { method: "GET" });
-        if (res.ok) {
-          const data = await res.json();
-          setResult(resolveDominant(data));
+        // 🔹 Données locales
+        const localData = {
+          first_name: localStorage.getItem("first_name") || "Invité",
+          profil_dominant: localStorage.getItem("profil_dominant"),
+          percent_curieux: localStorage.getItem("percent_curieux"),
+          percent_debutant: localStorage.getItem("percent_debutant"),
+          percent_intermediaire: localStorage.getItem("percent_intermediaire"),
+          percent_confirme: localStorage.getItem("percent_confirme"),
+          ai_feedback: localStorage.getItem("ai_feedback"),
+        };
+
+        const res = await fetch("/api/saveResults", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(localData),
+        });
+
+        let data;
+        try {
+          data = await res.json();
+        } catch {
+          data = {};
+        }
+
+        // ✅ Fallback si API renvoie vide
+        if (res.ok && data?.data?.profil_dominant) {
+          setResult(resolveDominant(data.data));
         } else {
-          const localData = {
-            profil_dominant: localStorage.getItem("profil_dominant"),
-            percent_curieux: localStorage.getItem("percent_curieux"),
-            percent_debutant: localStorage.getItem("percent_debutant"),
-            percent_intermediaire: localStorage.getItem("percent_intermediaire"),
-            percent_confirme: localStorage.getItem("percent_confirme"),
-            ai_feedback: localStorage.getItem("ai_feedback"),
-          };
+          console.warn("⚠️ Pas de data API, fallback localStorage :", localData);
           setResult(resolveDominant(localData));
         }
       } catch (err) {
         console.error("❌ Erreur côté front :", err);
+        const fallback = {
+          first_name: localStorage.getItem("first_name") || "Invité",
+          profil_dominant: localStorage.getItem("profil_dominant"),
+          percent_curieux: localStorage.getItem("percent_curieux"),
+          percent_debutant: localStorage.getItem("percent_debutant"),
+          percent_intermediaire: localStorage.getItem("percent_intermediaire"),
+          percent_confirme: localStorage.getItem("percent_confirme"),
+          ai_feedback: localStorage.getItem("ai_feedback"),
+        };
+        setResult(resolveDominant(fallback));
       }
     }
     fetchResults();
@@ -49,18 +75,14 @@ export default function ResultPage() {
     let ctaTarget = "";
     let explanation = "";
 
-    // Hiérarchie corrigée (du moins au plus avancé)
     const hierarchy = ["curieux", "debutant", "intermediaire", "confirme"];
 
     if (tied.length === 1) {
-      // ✅ Cas 1 : un profil dominant
       profil_display = tied[0];
       ctaTarget = tied[0];
       explanation = `Ton énergie est claire : tu avances surtout comme un(e) ${tied[0]}. 
 C’est ton terrain de jeu naturel. On va l’utiliser comme tremplin.`;
-    } 
-    else if (tied.length === 2) {
-      // ✅ Cas 2 : égalité double
+    } else if (tied.length === 2) {
       profil_display = `Égalité entre ${tied.join(" et ")}`;
       const sorted = tied.sort(
         (a, b) => hierarchy.indexOf(a) - hierarchy.indexOf(b)
@@ -70,11 +92,9 @@ C’est ton terrain de jeu naturel. On va l’utiliser comme tremplin.`;
 C’est riche mais piégeux. Pour t’ancrer et ne pas brûler d’étape, 
 on commence par la capsule du niveau ${ctaTarget}. 
 Tu poseras ainsi des fondations solides avant de libérer ton plein potentiel.`;
-    } 
-    else {
-      // ✅ Cas 3 : égalité triple ou quadruple
+    } else {
       profil_display = "⚖️ Pas de profil dominant";
-      ctaTarget = "curieux"; // capsule de base
+      ctaTarget = "curieux";
       explanation = `⚖️ Ton profil est encore trop équilibré pour révéler une dominante. 
 Pas grave : ça veut dire que tu es ouvert et adaptable. 
 On te propose de commencer par la capsule ${ctaTarget} pour poser les fondations, 
@@ -113,10 +133,8 @@ et découvrir la suite avec plus de clarté.`;
     let text = "";
 
     if (result.profil_display.startsWith("Égalité entre")) {
-      // ✅ Cas égalité double
       text = "⚖️ Tu es partagé entre deux énergies. Pour éviter de t’éparpiller, on commence par la capsule du niveau le moins avancé.";
     } else if (result.profil_display.includes("Pas de profil dominant") || result.profil_display.includes("⚖️")) {
-      // ✅ Cas égalité triple/quadruple
       text = "⚖️ Aucun profil ne domine pour l’instant. On pose ensemble les fondations avec la capsule " + result.ctaTarget + ", afin de clarifier ta progression.";
     } else if (result.ctaTarget === "curieux") {
       text = "Tu observes, tu explores… il est temps de transformer ta curiosité en première action concrète.";

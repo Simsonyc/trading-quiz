@@ -82,6 +82,7 @@ export default function Home() {
       return true;
     }
 
+    // ✅ computeAndSubmit corrigé avec délai de sécurité
     function computeAndSubmit() {
       const bd = document.getElementById("business_description_input").value.trim();
       document.getElementById("business_description").value = bd;
@@ -105,6 +106,7 @@ export default function Home() {
         confirme: toPercent(scores.confirme),
       };
 
+      // ordre conservé comme ton code existant
       const order = ["confirme", "intermediaire", "debutant", "curieux"];
       let dominant = "curieux", best = -1;
       for (const key of order) {
@@ -114,6 +116,7 @@ export default function Home() {
         }
       }
 
+      // Remplir les hidden (si utilisés ailleurs)
       document.getElementById("score_curieux").value = scores.curieux;
       document.getElementById("score_debutant").value = scores.debutant;
       document.getElementById("score_intermediaire").value = scores.intermediaire;
@@ -122,49 +125,59 @@ export default function Home() {
       document.getElementById("percent_debutant").value = perc.debutant;
       document.getElementById("percent_intermediaire").value = perc.intermediaire;
       document.getElementById("percent_confirme").value = perc.confirme;
-
       document.getElementById("profil_dominant").value = dominant;
 
-      document.getElementById("first_name").value = document.getElementById("first_name_input").value.trim();
-      document.getElementById("email").value = document.getElementById("email_input").value.trim();
+      const firstName = document.getElementById("first_name_input").value.trim();
+      const email = document.getElementById("email_input").value.trim();
+      document.getElementById("first_name").value = firstName;
+      document.getElementById("email").value = email;
 
+      // --- Sauvegarde immédiate dans localStorage (avant API) ---
+      localStorage.setItem("first_name", firstName);
+      localStorage.setItem("email", email);
+      localStorage.setItem("profil_dominant", dominant);
+      localStorage.setItem("percent_curieux", String(perc.curieux));
+      localStorage.setItem("percent_debutant", String(perc.debutant));
+      localStorage.setItem("percent_intermediaire", String(perc.intermediaire));
+      localStorage.setItem("percent_confirme", String(perc.confirme));
+
+      // --- Appel API pour feedback IA ---
       fetch("/api/saveResults", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          first_name: document.getElementById("first_name").value,
-          email: document.getElementById("email").value,
-          business_description: document.getElementById("business_description").value,
-          score_curieux: document.getElementById("score_curieux").value,
-          score_debutant: document.getElementById("score_debutant").value,
-          score_intermediaire: document.getElementById("score_intermediaire").value,
-          score_confirme: document.getElementById("score_confirme").value,
-          percent_curieux: document.getElementById("percent_curieux").value,
-          percent_debutant: document.getElementById("percent_debutant").value,
-          percent_intermediaire: document.getElementById("percent_intermediaire").value,
-          percent_confirme: document.getElementById("percent_confirme").value,
-          profil_dominant: document.getElementById("profil_dominant").value,
+          first_name: firstName,
+          email,
+          business_description: bd,
+          score_curieux: scores.curieux,
+          score_debutant: scores.debutant,
+          score_intermediaire: scores.intermediaire,
+          score_confirme: scores.confirme,
+          percent_curieux: perc.curieux,
+          percent_debutant: perc.debutant,
+          percent_intermediaire: perc.intermediaire,
+          percent_confirme: perc.confirme,
+          profil_dominant: dominant,
         }),
       })
         .then((res) => res.json())
         .then((data) => {
           console.log("✅ Réponse API :", data);
-          // ✅ Stocker la réponse IA côté navigateur
-          // Stocker toutes les infos nécessaires
-  localStorage.setItem("profil_dominant", data.data.profil_dominant);
-  localStorage.setItem("percent_curieux", data.data.percent_curieux);
-  localStorage.setItem("percent_debutant", data.data.percent_debutant);
-  localStorage.setItem("percent_intermediaire", data.data.percent_intermediaire);
-  localStorage.setItem("percent_confirme", data.data.percent_confirme);
-
-  if (data.data.ai_feedback) {
-  localStorage.setItem("ai_feedback", data.data.ai_feedback);
-}
-
-  // Redirection
-  window.location.href = "/result";
-})
-        .catch((err) => console.error("❌ Erreur API", err));
+          if (data?.data?.ai_feedback) {
+            localStorage.setItem("ai_feedback", data.data.ai_feedback);
+          }
+          // ⏳ Délai de sécurité avant redirection
+          setTimeout(() => {
+            window.location.href = "/result";
+          }, 300);
+        })
+        .catch((err) => {
+          console.error("❌ Erreur API", err);
+          // ⏳ Délai de sécurité même en cas d’erreur API
+          setTimeout(() => {
+            window.location.href = "/result";
+          }, 500);
+        });
     }
 
     const optionGroups = Array.from(document.querySelectorAll(".nb-options"));
@@ -368,6 +381,7 @@ export default function Home() {
           <button type="button" className="nb-btn nb-next" id="nbNext">Suivant ▶</button>
         </div>
 
+        {/* Hidden fields si jamais tu en as besoin côté backend ou autre */}
         <input type="hidden" id="business_description" name="business_description" />
         <input type="hidden" id="score_curieux" name="score_curieux" />
         <input type="hidden" id="score_debutant" name="score_debutant" />
@@ -384,6 +398,4 @@ export default function Home() {
     </>
   );
 }
-
-
 
